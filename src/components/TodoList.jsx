@@ -2,10 +2,18 @@
 import React from 'react';
 import TodoItem from './TodoItem';
 
-function TodoList() {
+function TodoList({ todos, modCompleted, todoDelect, updateTodo }) {
   return (
     <div>
-      <TodoItem />
+      {todos.map((todo, index) => (
+        <TodoItem
+          key={index}
+          {...todo}
+          modCompleted={modCompleted}
+          todoDelect={todoDelect}
+          updateTodo={updateTodo}
+        />
+      ))}
     </div>
   );
 }
