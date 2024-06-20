@@ -1,0 +1,17 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "리액트 공부하기",
+      "completed": false
+    },
+    {
+      "id": "2",
+      "title": "축구 연습하기",
+      "completed": false
+    },
+    {
+      "id": "22e7"
+    }
+  ]
+}

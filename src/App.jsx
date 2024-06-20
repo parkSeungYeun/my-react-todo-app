@@ -1,22 +1,18 @@
 import './App.css';
 import TodoInput from './components/TodoInput';
-// import TodoItem from './components/TodoItem';
 import TodoList from './components/TodoList';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      completed: true,
-      title: '리액트 공부하기',
-    },
-    {
-      id: 2,
-      completed: false,
-      title: '축구 연습하기',
-    },
-  ]);
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/todos')
+      .then((res) => res.json())
+      .then((data) => setTodos(data))
+      .catch((err) => console.log('Error')); // 구문 오류 수정
+  }, []);
+
   function addTodo(todo) {
     setTodos([
       ...todos,
@@ -27,8 +23,8 @@ function App() {
   function modCompleted(id) {
     setTodos(
       todos.map((todo) => {
-        if (todo.id == id) {
-          todo.completed = !todo.completed;
+        if (todo.id === id) {
+          return { ...todo, completed: !todo.completed };
         }
         return todo;
       })
@@ -36,16 +32,12 @@ function App() {
   }
 
   function todoDelect(id) {
-    const newTodos = [...todos];
-    const index = newTodos.findIndex((todo) => {
-      return id == todo.id;
-    });
-    newTodos.splice(index, 1);
-
+    const newTodos = todos.filter((todo) => todo.id !== id);
     setTodos(newTodos);
   }
 
   function updateTodo(newTodo) {
+    console.log(newTodo);
     setTodos(
       todos.map((todo) => (todo.id === newTodo.id ? { ...newTodo } : todo))
     );
