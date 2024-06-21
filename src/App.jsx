@@ -2,45 +2,81 @@ import './App.css';
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/todos')
-      .then((res) => res.json())
-      .then((data) => setTodos(data))
-      .catch((err) => console.log('Error')); // 구문 오류 수정
+    axios
+      .get('http://localhost:3001/todos')
+      .then((res) => {
+        console.log(res);
+        setTodos(res.data);
+      })
+      .catch((err) => {
+        console.error('Error occured on fetching', err);
+      });
   }, []);
 
   function addTodo(todo) {
-    setTodos([
-      ...todos,
-      { id: todos.length + 1, title: todo, completed: false },
-    ]);
+    axios
+      .post('http://localhost:3001/todos', {
+        title: todo,
+        completed: false,
+      })
+      .then((res) => {
+        console.log('Todo added:', res.data);
+        setTodos([...todos, res.data]);
+      })
+      .catch((err) => {
+        console.error('Error occurred on adding todo:', err);
+      });
   }
 
   function modCompleted(id) {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, completed: !todo.completed };
-        }
-        return todo;
+    axios
+      .put(`http://localhost:3001/todos/${id}`, {
+        completed: !todos.find((todo) => todo.id === id).completed,
       })
-    );
+      .then((res) => {
+        console.log('Todo completed status updated:', res.data);
+        setTodos(
+          todos.map((todo) =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+          )
+        );
+      })
+      .catch((err) => {
+        console.error('Error occurred on updating todo:', err);
+      });
   }
 
   function todoDelect(id) {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
+    axios
+      .delete(`http://localhost:3001/todos/${id}`)
+      .then((res) => {
+        console.log('Todo deleted:', id);
+        const newTodos = todos.filter((todo) => todo.id !== id);
+        setTodos(newTodos);
+      })
+      .catch((err) => {
+        console.error('Error occurred on deleting todo:', err);
+      });
   }
 
   function updateTodo(newTodo) {
-    console.log(newTodo);
-    setTodos(
-      todos.map((todo) => (todo.id === newTodo.id ? { ...newTodo } : todo))
-    );
+    axios
+      .put(`http://localhost:3001/todos/${newTodo.id}`, newTodo)
+      .then((res) => {
+        console.log('Todo updated:', res.data);
+        setTodos(
+          todos.map((todo) => (todo.id === newTodo.id ? { ...newTodo } : todo))
+        );
+      })
+      .catch((err) => {
+        console.error('Error occurred on updating todo:', err);
+      });
   }
 
   return (

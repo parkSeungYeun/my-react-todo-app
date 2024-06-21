@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+// TodoItem.js
+import React, { useState } from 'react';
 import { FiEdit2, FiTrash2, FiCheck } from 'react-icons/fi';
 
 function TodoItem({
@@ -13,7 +14,7 @@ function TodoItem({
   const [inputTitle, setInputTitle] = useState(title);
 
   function handleCompleted(e) {
-    if (e.target.tagName == 'LI' || e.target.tagName == 'SPAN') {
+    if (e.target.tagName === 'LI' || e.target.tagName === 'SPAN') {
       modCompleted(id);
     }
   }
@@ -27,8 +28,11 @@ function TodoItem({
   }
 
   function handleUpdate() {
-    // modCompleted({ id, title: inputTitle, completed });
-    updateTodo({ id, title: inputTitle, completed });
+    updateTodo({
+      id,
+      title: inputTitle,
+      completed,
+    });
     setIsEditing(false);
   }
 
@@ -39,9 +43,9 @@ function TodoItem({
     >
       {!isEditing ? (
         <span
-          className={`hover:cursor-default flex-grow ${
+          className={`${
             completed ? 'line-through' : ''
-          }`}
+          } flex-grow hover:cursor-default`}
         >
           {title}
         </span>
@@ -61,7 +65,7 @@ function TodoItem({
             isEditing
               ? 'bg-green-400 hover:bg-green-500'
               : 'bg-sky-500 hover:bg-sky-600'
-          }  text-white`}
+          } text-white`}
         >
           {isEditing ? <FiCheck /> : <FiEdit2 />}
         </button>
